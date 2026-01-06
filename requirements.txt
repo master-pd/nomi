@@ -1,0 +1,14 @@
+aiogram==3.0.0
+gtts==2.3.2
+Pillow==10.1.0
+pytz==2023.3
+requests==2.31.0
+aiofiles==23.2.1
+python-multipart==0.0.6
+ujson==5.8.0
+apscheduler==3.10.4
+pydub==0.25.1
+mutagen==1.47.0
+emoji==2.8.0
+pytz==2023.3.post1
+python-dotenv==1.0.0

@@ -1,0 +1,18 @@
+# /etc/systemd/system/your-crush-bot.service
+[Unit]
+Description=Your Crush Telegram Bot
+After=network.target
+
+[Service]
+Type=simple
+User=botuser
+WorkingDirectory=/opt/your_crush_bot
+Environment=PYTHONPATH=/opt/your_crush_bot
+ExecStart=/opt/your_crush_bot/venv/bin/python /opt/your_crush_bot/run.py
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target
