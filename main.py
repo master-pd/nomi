@@ -45,7 +45,7 @@ class NOMIBot:
             await self.startup.execute()
             
             # Health Monitor
-            self.health.start_monitoring()
+            asyncio.create_task(self.health.start_monitoring())
             
             self.is_running = True
             self.logger.info("✅ Bot successfully started!")
