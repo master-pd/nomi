@@ -1,0 +1,10 @@
+{
+  "type": "sqlite",
+  "path": "data/nomi.db",
+  "backup_interval": 3600,
+  "max_connections": 10,
+  "auto_vacuum": true,
+  "journal_mode": "WAL",
+  "cache_size": 2000,
+  "timeout": 30
+}

@@ -1,0 +1,9 @@
+{
+  "json_ttl": 300,
+  "voice_ttl": 600,
+  "image_ttl": 600,
+  "max_size_mb": 100,
+  "cleanup_interval": 3600,
+  "compression": true,
+  "memory_cache": true
+}

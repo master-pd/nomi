@@ -1,1 +1,15 @@
-
+{
+  "name": "𝗡𝗢𝗠𝗜 ⟵𝗼_𝟬",
+  "version": "1.0.0",
+  "language": "bn",
+  "timezone": "Asia/Dhaka",
+  "mode": "production",
+  "debug": false,
+  "admin_ids": [123456789, 987654321],
+  "owner_id": 123456789,
+  "log_level": "INFO",
+  "max_workers": 10,
+  "auto_update": true,
+  "backup_enabled": true,
+  "privacy_mode": false
+}

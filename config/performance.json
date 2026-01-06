@@ -1,0 +1,13 @@
+{
+  "max_workers": 10,
+  "queue_size": 1000,
+  "timeout": 30,
+  "retry_attempts": 3,
+  "rate_limit": {
+    "per_second": 10,
+    "per_minute": 100,
+    "per_hour": 1000
+  },
+  "memory_limit_mb": 512,
+  "cpu_threshold": 80
+}
