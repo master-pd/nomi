@@ -54,20 +54,28 @@ class StartupManager:
             
         # Check required packages
         required = [
-            "telegram",
-            "pillow",
-            "aiofiles",
-            "aiohttp",
-            "sqlite3",
-            "json"
-        ]
-        
-        for package in required:
+    "telegram",
+    "pillow",
+    "aiofiles",
+    "aiohttp",
+    "sqlite3",
+    "json"
+]
+
+for package in required:
+    try:
+        if package == "pillow":
+            # Pillow check specially
             try:
-                __import__(package.replace('-', '_'))
+                from PIL import Image
+                self.logger.info("✅ Pillow loaded successfully")
             except ImportError:
-                self.logger.warning(f"⚠️ Package {package} not found")
-                
+                self.logger.warning("⚠️ Package pillow not found, some features may not work")
+        else:
+            __import__(package.replace('-', '_'))
+    except ImportError:
+        self.logger.warning(f"⚠️ Package {package} not found")
+        
     async def _load_responses(self):
         """Load all JSON response files"""
         self.logger.info("📄 Loading response files...")
