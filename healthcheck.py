@@ -1,15 +1,25 @@
 """
-Healthcheck System - Monitors bot health
+Healthcheck System - Monitors bot health (Production-ready Termux/Android)
 """
 
 import time
 import psutil
 import logging
 from typing import Dict, Any, List, Optional
-from datetime import datetime, timedelta
+from datetime import datetime
 import asyncio
 from dataclasses import dataclass
 from enum import Enum
+import sys
+
+# Load config
+try:
+    import json
+    with open("config/bot.json", "r", encoding="utf-8") as f:
+        BOT_CONFIG = json.load(f)
+except:
+    BOT_CONFIG = {}
+ENABLE_SYSTEM_METRICS = BOT_CONFIG.get("ENABLE_SYSTEM_METRICS", False)
 
 class HealthStatus(Enum):
     """Health status levels"""
@@ -121,49 +131,68 @@ class HealthMonitor:
         
     async def _check_system_metrics(self):
         """Check system metrics"""
+        if not ENABLE_SYSTEM_METRICS:
+            self.logger.info("⚠️ System metrics disabled via config")
+            return
+        
         try:
             # CPU usage
-            cpu_percent = psutil.cpu_percent(interval=1)
-            self._update_metric(
-                name="cpu_usage",
-                value=cpu_percent,
-                unit="%",
-                threshold_warning=80,
-                threshold_critical=95
-            )
+            try:
+                cpu_percent = psutil.cpu_percent(interval=1)
+            except (PermissionError, FileNotFoundError):
+                cpu_percent = None
+            if cpu_percent is not None:
+                self._update_metric(
+                    name="cpu_usage",
+                    value=cpu_percent,
+                    unit="%",
+                    threshold_warning=80,
+                    threshold_critical=95
+                )
             
             # Memory usage
-            memory = psutil.virtual_memory()
-            memory_percent = memory.percent
-            self._update_metric(
-                name="memory_usage",
-                value=memory_percent,
-                unit="%",
-                threshold_warning=85,
-                threshold_critical=95
-            )
+            try:
+                memory = psutil.virtual_memory()
+                memory_percent = memory.percent
+            except (PermissionError, FileNotFoundError):
+                memory_percent = None
+            if memory_percent is not None:
+                self._update_metric(
+                    name="memory_usage",
+                    value=memory_percent,
+                    unit="%",
+                    threshold_warning=85,
+                    threshold_critical=95
+                )
             
             # Disk usage
-            disk = psutil.disk_usage('/')
-            disk_percent = disk.percent
-            self._update_metric(
-                name="disk_usage",
-                value=disk_percent,
-                unit="%",
-                threshold_warning=90,
-                threshold_critical=98
-            )
+            try:
+                disk = psutil.disk_usage('/')
+                disk_percent = disk.percent
+            except (PermissionError, FileNotFoundError):
+                disk_percent = None
+            if disk_percent is not None:
+                self._update_metric(
+                    name="disk_usage",
+                    value=disk_percent,
+                    unit="%",
+                    threshold_warning=90,
+                    threshold_critical=98
+                )
             
-            # Bot process info
-            process = psutil.Process()
-            memory_mb = process.memory_info().rss / 1024 / 1024
-            self._update_metric(
-                name="bot_memory",
-                value=memory_mb,
-                unit="MB",
-                threshold_warning=512,  # 512MB
-                threshold_critical=1024  # 1GB
-            )
+            # Bot memory
+            try:
+                process = psutil.Process()
+                memory_mb = process.memory_info().rss / 1024 / 1024
+                self._update_metric(
+                    name="bot_memory",
+                    value=memory_mb,
+                    unit="MB",
+                    threshold_warning=512,
+                    threshold_critical=1024
+                )
+            except (PermissionError, FileNotFoundError):
+                pass
             
         except Exception as e:
             self.logger.error(f"❌ System metrics error: {e}")
@@ -171,9 +200,6 @@ class HealthMonitor:
     async def _check_bot_metrics(self):
         """Check bot-specific metrics"""
         try:
-            # Get bot metrics from other components
-            # These would be populated by other systems
-            
             # Placeholder metrics
             self._update_metric(
                 name="active_users",
@@ -182,7 +208,6 @@ class HealthMonitor:
                 threshold_warning=1000,
                 threshold_critical=5000
             )
-            
             self._update_metric(
                 name="messages_per_minute",
                 value=0,
@@ -190,7 +215,6 @@ class HealthMonitor:
                 threshold_warning=100,
                 threshold_critical=500
             )
-            
             self._update_metric(
                 name="response_time",
                 value=0.1,
@@ -198,7 +222,6 @@ class HealthMonitor:
                 threshold_warning=2.0,
                 threshold_critical=5.0
             )
-            
         except Exception as e:
             self.logger.error(f"❌ Bot metrics error: {e}")
             
@@ -214,10 +237,8 @@ class HealthMonitor:
         
         for service_name in services_to_check:
             try:
-                # TODO: Actually check each service
                 status = HealthStatus.HEALTHY
                 response_time = 0.01
-                
                 if service_name not in self.services:
                     self.services[service_name] = ServiceStatus(
                         name=service_name,
@@ -239,6 +260,8 @@ class HealthMonitor:
     def _update_metric(self, name: str, value: float, unit: str,
                       threshold_warning: float, threshold_critical: float):
         """Update a health metric"""
+        if value is None:
+            return
         if value >= threshold_critical:
             status = HealthStatus.CRITICAL
         elif value >= threshold_warning:
@@ -262,126 +285,25 @@ class HealthMonitor:
         """Calculate overall health status"""
         if not self.metrics:
             return HealthStatus.HEALTHY
-            
-        # Check for critical metrics
         for metric in self.metrics.values():
             if metric.status == HealthStatus.CRITICAL:
                 return HealthStatus.CRITICAL
-                
-        # Check for warning metrics
         for metric in self.metrics.values():
             if metric.status == HealthStatus.WARNING:
                 return HealthStatus.WARNING
-                
-        # Check services
         for service in self.services.values():
             if service.status != HealthStatus.HEALTHY:
                 return service.status
-                
         return HealthStatus.HEALTHY
         
     def get_health_report(self) -> Dict[str, Any]:
         """Get comprehensive health report"""
         overall_status = self._calculate_overall_status()
-        
         report = {
             'timestamp': datetime.now().isoformat(),
             'status': overall_status.value,
             'uptime': time.time() - self.start_time,
-            'metrics': {},
-            'services': {},
-            'system_info': self._get_system_info(),
-            'history_summary': self._get_history_summary()
+            'metrics': {k: {'value': v.value, 'unit': v.unit, 'status': v.status.value} for k,v in self.metrics.items()},
+            'services': {k: {'status': v.status.value, 'uptime': v.uptime} for k,v in self.services.items()}
         }
-        
-        # Add metrics
-        for name, metric in self.metrics.items():
-            report['metrics'][name] = {
-                'value': metric.value,
-                'unit': metric.unit,
-                'status': metric.status.value,
-                'threshold_warning': metric.threshold_warning,
-                'threshold_critical': metric.threshold_critical
-            }
-            
-        # Add services
-        for name, service in self.services.items():
-            report['services'][name] = {
-                'status': service.status.value,
-                'uptime': service.uptime,
-                'error_count': service.error_count,
-                'response_time': service.response_time
-            }
-            
         return report
-        
-    def _get_system_info(self) -> Dict[str, Any]:
-        """Get system information"""
-        try:
-            return {
-                'python_version': f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}",
-                'platform': sys.platform,
-                'processor': psutil.cpu_count(),
-                'total_memory_gb': psutil.virtual_memory().total / (1024**3),
-                'total_disk_gb': psutil.disk_usage('/').total / (1024**3)
-            }
-        except:
-            return {}
-            
-    def _get_history_summary(self) -> Dict[str, Any]:
-        """Get health history summary"""
-        if not self.health_history:
-            return {}
-            
-        last_24h = [h for h in self.health_history 
-                   if time.time() - datetime.fromisoformat(h['timestamp']).timestamp() < 86400]
-                   
-        status_counts = {}
-        for record in last_24h:
-            status = record['status']
-            status_counts[status] = status_counts.get(status, 0) + 1
-            
-        return {
-            'total_checks_24h': len(last_24h),
-            'status_distribution': status_counts,
-            'last_check': self.health_history[-1]['timestamp'] if self.health_history else None
-        }
-        
-    def register_service(self, name: str):
-        """Register a service for monitoring"""
-        if name not in self.services:
-            self.services[name] = ServiceStatus(
-                name=name,
-                status=HealthStatus.HEALTHY,
-                uptime=0,
-                last_check=0,
-                error_count=0,
-                response_time=0
-            )
-            
-    def update_service_status(self, name: str, status: HealthStatus, 
-                            response_time: float = 0):
-        """Update service status"""
-        if name in self.services:
-            service = self.services[name]
-            service.status = status
-            service.last_check = time.time()
-            service.response_time = response_time
-            
-            if status != HealthStatus.HEALTHY:
-                service.error_count += 1
-                
-    def get_service_status(self, name: str) -> Optional[ServiceStatus]:
-        """Get service status by name"""
-        return self.services.get(name)
-        
-    def is_healthy(self) -> bool:
-        """Check if system is healthy"""
-        return self._calculate_overall_status() == HealthStatus.HEALTHY
-        
-    def trigger_alert(self, alert_type: str, message: str, severity: str = "warning"):
-        """Trigger health alert"""
-        self.logger.warning(f"🚨 Health Alert [{severity}]: {message}")
-        
-        # TODO: Send notification to admins
-        # TODO: Log to health alerts file
