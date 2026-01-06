@@ -1,0 +1,201 @@
+{
+  "events": {
+    "types": {
+      "join": {
+        "name": "সদস্য যোগদান",
+        "description": "নতুন সদস্য গ্রুপে জয়েন করলে",
+        "handler": "welcome_engine",
+        "priority": "high"
+      },
+      "leave": {
+        "name": "সদস্য প্রস্থান",
+        "description": "সদস্য গ্রুপ ছেড়ে গেলে",
+        "handler": "goodbye_engine",
+        "priority": "medium"
+      },
+      "message": {
+        "name": "নতুন মেসেজ",
+        "description": "কোনো মেসেজ পাঠালে",
+        "handler": "auto_reply_engine",
+        "priority": "low"
+      },
+      "command": {
+        "name": "কমান্ড এক্সিকিউশন",
+        "description": "কোনো কমান্ড দিলে",
+        "handler": "command_handler",
+        "priority": "high"
+      },
+      "warning": {
+        "name": "সতর্কতা ইস্যু",
+        "description": "সদস্যকে সতর্ক করলে",
+        "handler": "warning_system",
+        "priority": "medium"
+      },
+      "mute": {
+        "name": "মিউট ইভেন্ট",
+        "description": "সদস্যকে মিউট করলে",
+        "handler": "auto_mute",
+        "priority": "high"
+      },
+      "ban": {
+        "name": "ব্যান ইভেন্ট",
+        "description": "সদস্যকে ব্যান করলে",
+        "handler": "auto_ban",
+        "priority": "critical"
+      },
+      "promotion": {
+        "name": "পদোন্নতি",
+        "description": "সদস্যকে পদোন্নতি দিলে",
+        "handler": "admin_system",
+        "priority": "medium"
+      },
+      "achievement": {
+        "name": "অর্জন লাভ",
+        "description": "সদস্য কোনো অর্জন পেলে",
+        "handler": "rank_engine",
+        "priority": "low"
+      },
+      "error": {
+        "name": "সিস্টেম ত্রুটি",
+        "description": "সিস্টেমে কোনো ত্রুটি হলে",
+        "handler": "error_handler",
+        "priority": "critical"
+      },
+      "backup": {
+        "name": "ব্যাকআপ সম্পন্ন",
+        "description": "ডেটা ব্যাকআপ সম্পন্ন হলে",
+        "handler": "backup_system",
+        "priority": "low"
+      },
+      "maintenance": {
+        "name": "মেইন্টেন্যান্স",
+        "description": "সিস্টেম মেইন্টেন্যান্স",
+        "handler": "maintenance_system",
+        "priority": "high"
+      }
+    },
+    
+    "triggers": {
+      "on_join": [
+        "send_welcome_message",
+        "update_group_stats",
+        "check_user_reputation",
+        "send_rules_if_new"
+      ],
+      "on_message": [
+        "check_for_spam",
+        "check_for_badwords",
+        "check_for_links",
+        "auto_reply_if_match",
+        "update_user_stats"
+      ],
+      "on_command": [
+        "validate_permissions",
+        "log_command_usage",
+        "execute_command",
+        "update_command_stats"
+      ],
+      "on_warning": [
+        "notify_user",
+        "notify_admins",
+        "update_warning_count",
+        "check_for_auto_mute"
+      ],
+      "on_error": [
+        "log_error",
+        "notify_admins",
+        "attempt_recovery",
+        "update_error_stats"
+      ]
+    },
+    
+    "handlers": {
+      "immediate": [
+        "security_checks",
+        "permission_checks",
+        "critical_actions"
+      ],
+      "delayed": [
+        "statistics_update",
+        "cleanup_tasks",
+        "notification_sending"
+      ],
+      "scheduled": [
+        "daily_backup",
+        "weekly_reports",
+        "monthly_cleanup"
+      ]
+    },
+    
+    "logging": {
+      "enabled": true,
+      "log_levels": {
+        "debug": false,
+        "info": true,
+        "warning": true,
+        "error": true,
+        "critical": true
+      },
+      "log_formats": ["json", "text"],
+      "log_retention": 30,
+      "log_compression": true
+    },
+    
+    "monitoring": {
+      "event_counters": true,
+      "response_times": true,
+      "error_rates": true,
+      "success_rates": true,
+      "real_time_alerts": true
+    },
+    
+    "reports": {
+      "daily_summary": {
+        "enabled": true,
+        "time": "23:00",
+        "recipients": ["admins"]
+      },
+      "weekly_activity": {
+        "enabled": true,
+        "day": "sunday",
+        "time": "20:00",
+        "recipients": ["admins"]
+      },
+      "monthly_stats": {
+        "enabled": true,
+        "day": 1,
+        "time": "10:00",
+        "recipients": ["owner"]
+      },
+      "error_report": {
+        "enabled": true,
+        "threshold": 10,
+        "recipients": ["developers"]
+      }
+    },
+    
+    "automation": {
+      "auto_cleanup": {
+        "enabled": true,
+        "schedule": "daily",
+        "time": "04:00"
+      },
+      "auto_backup": {
+        "enabled": true,
+        "schedule": "daily",
+        "time": "02:00"
+      },
+      "auto_update": {
+        "enabled": true,
+        "schedule": "weekly",
+        "day": "monday",
+        "time": "03:00"
+      },
+      "auto_restart": {
+        "enabled": false,
+        "schedule": "daily",
+        "time": "05:00"
+      }
+    }
+  }
+}

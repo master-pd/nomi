@@ -1,0 +1,143 @@
+{
+  "notifications": {
+    "types": {
+      "welcome": {
+        "enabled": true,
+        "template": "🎉 {user_name} গ্রুপে জয়েন করেছেন! মোট সদস্য: {total_members}",
+        "mention_user": true,
+        "send_to_pm": false
+      },
+      "goodbye": {
+        "enabled": true,
+        "template": "👋 {user_name} গ্রুপ ছেড়ে চলে গেছেন।",
+        "mention_user": false,
+        "send_to_pm": false
+      },
+      "promotion": {
+        "enabled": true,
+        "template": "👑 {user_name} কে {new_role} পদে উন্নীত করা হয়েছে! অভিনন্দন! 🎊",
+        "mention_user": true,
+        "send_to_pm": true
+      },
+      "warning": {
+        "enabled": true,
+        "template": "⚠️ {user_name}, আপনি একটি সতর্কতা পেয়েছেন। কারণ: {reason}",
+        "mention_user": true,
+        "send_to_pm": true
+      },
+      "mute": {
+        "enabled": true,
+        "template": "🔇 {user_name} কে {duration} এর জন্য মিউট করা হয়েছে। কারণ: {reason}",
+        "mention_user": true,
+        "send_to_pm": true
+      },
+      "ban": {
+        "enabled": true,
+        "template": "🔨 {user_name} কে ব্যান করা হয়েছে। কারণ: {reason}",
+        "mention_user": true,
+        "send_to_pm": true
+      },
+      "report": {
+        "enabled": true,
+        "template": "🚨 রিপোর্ট: {reported_user} কে {reporter} রিপোর্ট করেছেন। কারণ: {reason}",
+        "mention_user": false,
+        "send_to_pm": false
+      },
+      "achievement": {
+        "enabled": true,
+        "template": "🏆 {user_name} একটি অর্জন পেয়েছেন: {achievement_name}! 🎉",
+        "mention_user": true,
+        "send_to_pm": true
+      },
+      "level_up": {
+        "enabled": true,
+        "template": "⭐ {user_name} লেভেল আপ করেছেন! নতুন লেভেল: {new_level} 🎊",
+        "mention_user": true,
+        "send_to_pm": true
+      },
+      "birthday": {
+        "enabled": true,
+        "template": "🎂 শুভ জন্মদিন {user_name}! আল্লাহ আপনাকে দীর্ঘ জীবন দিন! 🎉",
+        "mention_user": true,
+        "send_to_pm": true
+      }
+    },
+    
+    "settings": {
+      "admin_notifications": {
+        "enabled": true,
+        "events": [
+          "report",
+          "warning",
+          "ban",
+          "mute",
+          "error"
+        ],
+        "mention_admins": false
+      },
+      "user_notifications": {
+        "enabled": true,
+        "events": [
+          "welcome",
+          "promotion",
+          "warning",
+          "mute",
+          "ban",
+          "achievement",
+          "level_up",
+          "birthday"
+        ],
+        "allow_opt_out": true
+      },
+      "group_notifications": {
+        "enabled": true,
+        "events": [
+          "welcome",
+          "goodbye",
+          "promotion",
+          "achievement",
+          "level_up"
+        ],
+        "minimum_interval": 60
+      }
+    },
+    
+    "templates": {
+      "welcome_pm": "আসসালামু আলাইকুম {user_name}! 👋\n{group_name} গ্রুপে আপনাকে স্বাগতম।\n\n📜 গ্রুপের নিয়মাবলী পড়ে নিন:\n{rules}\n\nআশা করি ভালো সময় কাটাবেন! 😊",
+      
+      "warning_pm": "সতর্কতা নোটিস ⚠️\n\nআপনি একটি সতর্কতা পেয়েছেন:\nকারণ: {reason}\nদেওয়ার তারিখ: {date}\n\nদয়া করে গ্রুপের নিয়ম মেনে চলুন।\nআরও সতর্কতা পেলে পদক্ষেপ নেওয়া হবে।",
+      
+      "mute_pm": "মিউট নোটিস 🔇\n\nআপনাকে {duration} এর জন্য মিউট করা হয়েছে:\nকারণ: {reason}\nশুরু: {start_time}\nশেষ: {end_time}\n\nদয়া এই সময়ে গ্রুপে মেসেজ দিবেন না।",
+      
+      "achievement_pm": "অভিনন্দন! 🏆\n\nআপনি অর্জন পেয়েছেন: {achievement_name}\nবিবরণ: {description}\nতারিখ: {date}\n\nআপনার সক্রিয়তার জন্য ধন্যবাদ! 🎉",
+      
+      "birthday_pm": "শুভ জন্মদিন! 🎂\n\nপ্রিয় {user_name},\nআপনার জন্মদিনে রইলো অগণিত শুভেচ্ছা।\nআল্লাহ আপনাকে দীর্ঘ জীবন, সুস্থতা ও\nসফলতা দান করুন! 🎉\n\nশুভ কামনা রইল,\n{bot_name} ও {group_name} পরিবার"
+    },
+    
+    "scheduling": {
+      "birthday_reminders": {
+        "enabled": true,
+        "time": "09:00",
+        "advance_days": 1
+      },
+      "weekly_summary": {
+        "enabled": true,
+        "day": "sunday",
+        "time": "20:00"
+      },
+      "monthly_report": {
+        "enabled": true,
+        "day": 1,
+        "time": "10:00"
+      }
+    },
+    
+    "formatting": {
+      "use_emoji": true,
+      "use_mentions": true,
+      "use_hashtags": false,
+      "max_length": 500,
+      "line_breaks": true
+    }
+  }
+}

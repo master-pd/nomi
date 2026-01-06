@@ -1,1 +1,270 @@
-
+{
+  "admin_panel": {
+    "enabled": true,
+    "access_levels": {
+      "owner": 100,
+      "super_admin": 90,
+      "admin": 80,
+      "moderator": 70,
+      "helper": 60
+    },
+    
+    "commands": {
+      "user_management": {
+        "promote": {
+          "command": "/promote",
+          "description": "সদস্যকে এডমিন করুন",
+          "min_level": 80,
+          "usage": "/promote @username [level]"
+        },
+        "demote": {
+          "command": "/demote",
+          "description": "এডমিনশন রিভোক করুন",
+          "min_level": 90,
+          "usage": "/demote @username"
+        },
+        "ban": {
+          "command": "/ban",
+          "description": "সদস্যকে ব্লক করুন",
+          "min_level": 70,
+          "usage": "/ban @username [reason]"
+        },
+        "unban": {
+          "command": "/unban",
+          "description": "সদস্য আনব্লক করুন",
+          "min_level": 70,
+          "usage": "/unban @username"
+        },
+        "mute": {
+          "command": "/mute",
+          "description": "সদস্য মিউট করুন",
+          "min_level": 60,
+          "usage": "/mute @username [duration] [reason]"
+        },
+        "unmute": {
+          "command": "/unmute",
+          "description": "সদস্য আনমিউট করুন",
+          "min_level": 60,
+          "usage": "/unmute @username"
+        },
+        "warn": {
+          "command": "/warn",
+          "description": "সদস্যকে সতর্ক করুন",
+          "min_level": 60,
+          "usage": "/warn @username [reason]"
+        }
+      },
+      
+      "group_management": {
+        "setrules": {
+          "command": "/setrules",
+          "description": "গ্রুপ নিয়ম সেট করুন",
+          "min_level": 80,
+          "usage": "/setrules [rules text]"
+        },
+        "setwelcome": {
+          "command": "/setwelcome",
+          "description": "স্বাগতম মেসেজ সেট করুন",
+          "min_level": 70,
+          "usage": "/setwelcome [message]"
+        },
+        "setgoodbye": {
+          "command": "/setgoodbye",
+          "description": "বিদায় মেসেজ সেট করুন",
+          "min_level": 70,
+          "usage": "/setgoodbye [message]"
+        },
+        "cleanup": {
+          "command": "/cleanup",
+          "description": "পুরানো মেসেজ ডিলিট করুন",
+          "min_level": 80,
+          "usage": "/cleanup [days]"
+        },
+        "pin": {
+          "command": "/pin",
+          "description": "মেসেজ পিন করুন",
+          "min_level": 60,
+          "usage": "/pin [reply to message]"
+        },
+        "unpin": {
+          "command": "/unpin",
+          "description": "মেসেজ আনপিন করুন",
+          "min_level": 60,
+          "usage": "/unpin"
+        }
+      },
+      
+      "bot_control": {
+        "broadcast": {
+          "command": "/broadcast",
+          "description": "সবাইকে মেসেজ পাঠান",
+          "min_level": 90,
+          "usage": "/broadcast [message]"
+        },
+        "backup": {
+          "command": "/backup",
+          "description": "বট ডেটা ব্যাকআপ করুন",
+          "min_level": 100,
+          "usage": "/backup"
+        },
+        "restore": {
+          "command": "/restore",
+          "description": "বট ডেটা রিস্টোর করুন",
+          "min_level": 100,
+          "usage": "/restore [backup_id]"
+        },
+        "logs": {
+          "command": "/logs",
+          "description": "বট লগস দেখুন",
+          "min_level": 80,
+          "usage": "/logs [type] [lines]"
+        },
+        "stats": {
+          "command": "/stats",
+          "description": "বট স্ট্যাটিস্টিক্স দেখুন",
+          "min_level": 70,
+          "usage": "/stats"
+        },
+        "restart": {
+          "command": "/restart",
+          "description": "বট রিস্টার্ট করুন",
+          "min_level": 100,
+          "usage": "/restart"
+        },
+        "shutdown": {
+          "command": "/shutdown",
+          "description": "বট বন্ধ করুন",
+          "min_level": 100,
+          "usage": "/shutdown"
+        }
+      },
+      
+      "moderation_settings": {
+        "antispam": {
+          "command": "/antispam",
+          "description": "স্প্যাম প্রোটেকশন সেটিংস",
+          "min_level": 70,
+          "usage": "/antispam [on/off] [settings]"
+        },
+        "antilink": {
+          "command": "/antilink",
+          "description": "লিংক কন্ট্রোল সেটিংস",
+          "min_level": 70,
+          "usage": "/antilink [on/off] [whitelist]"
+        },
+        "badword": {
+          "command": "/badword",
+          "description": "বাজওয়ার্ড ফিল্টার সেটিংস",
+          "min_level": 70,
+          "usage": "/badword [add/remove/list] [word]"
+        },
+        "antiflood": {
+          "command": "/antiflood",
+          "description": "ফ্লাড কন্ট্রোল সেটিংস",
+          "min_level": 70,
+          "usage": "/antiflood [on/off] [settings]"
+        }
+      }
+    },
+    
+    "permissions": {
+      "owner": [
+        "promote",
+        "demote",
+        "ban",
+        "unban",
+        "mute",
+        "unmute",
+        "warn",
+        "setrules",
+        "setwelcome",
+        "setgoodbye",
+        "cleanup",
+        "pin",
+        "unpin",
+        "broadcast",
+        "backup",
+        "restore",
+        "logs",
+        "stats",
+        "restart",
+        "shutdown",
+        "antispam",
+        "antilink",
+        "badword",
+        "antiflood"
+      ],
+      "super_admin": [
+        "promote",
+        "demote",
+        "ban",
+        "unban",
+        "mute",
+        "unmute",
+        "warn",
+        "setrules",
+        "setwelcome",
+        "setgoodbye",
+        "cleanup",
+        "pin",
+        "unpin",
+        "broadcast",
+        "logs",
+        "stats",
+        "antispam",
+        "antilink",
+        "badword",
+        "antiflood"
+      ],
+      "admin": [
+        "ban",
+        "unban",
+        "mute",
+        "unmute",
+        "warn",
+        "setwelcome",
+        "setgoodbye",
+        "pin",
+        "unpin",
+        "stats",
+        "antispam",
+        "antilink",
+        "badword",
+        "antiflood"
+      ],
+      "moderator": [
+        "mute",
+        "unmute",
+        "warn",
+        "pin",
+        "antispam",
+        "antilink"
+      ],
+      "helper": [
+        "warn",
+        "antispam"
+      ]
+    },
+    
+    "logs_settings": {
+      "enabled": true,
+      "log_types": [
+        "admin_actions",
+        "user_actions",
+        "errors",
+        "moderation",
+        "system"
+      ],
+      "retention_days": 30,
+      "auto_cleanup": true
+    },
+    
+    "backup_settings": {
+      "enabled": true,
+      "auto_backup": true,
+      "backup_interval": 86400,
+      "max_backups": 10,
+      "backup_path": "data/backups"
+    }
+  }
+}

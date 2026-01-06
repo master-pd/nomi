@@ -1,0 +1,100 @@
+{
+  "enabled": true,
+  "default_language": "bn",
+  "voice_type": "soft",
+  "speed_control": true,
+  "emotion_control": true,
+  "cache": true,
+  "auto_cleanup": true,
+  
+  "voices": {
+    "soft": {
+      "description": "নরম ও মিষ্টি স্বর",
+      "speed_range": [0.7, 1.3],
+      "pitch": "medium"
+    },
+    "normal": {
+      "description": "সাধারণ স্বর",
+      "speed_range": [0.8, 1.2],
+      "pitch": "normal"
+    },
+    "fast": {
+      "description": "দ্রুত স্বর",
+      "speed_range": [1.0, 1.5],
+      "pitch": "high"
+    },
+    "slow": {
+      "description": "ধীর স্বর",
+      "speed_range": [0.5, 0.9],
+      "pitch": "low"
+    }
+  },
+  
+  "emotions": {
+    "happy": {
+      "description": "খুশি স্বর",
+      "speed": 1.1,
+      "pitch": "high"
+    },
+    "sad": {
+      "description": "দুঃখিত স্বর",
+      "speed": 0.8,
+      "pitch": "low"
+    },
+    "excited": {
+      "description": "উত্তেজিত স্বর",
+      "speed": 1.3,
+      "pitch": "very_high"
+    },
+    "calm": {
+      "description": "শান্ত স্বর",
+      "speed": 0.9,
+      "pitch": "medium_low"
+    },
+    "neutral": {
+      "description": "নিরপেক্ষ স্বর",
+      "speed": 1.0,
+      "pitch": "normal"
+    }
+  },
+  
+  "templates": {
+    "welcome": {
+      "text": "স্বাগতম {user_name}! {group_name} গ্রুপে আপনাকে স্বাগতম।",
+      "voice_type": "soft",
+      "emotion": "happy",
+      "speed": 0.9
+    },
+    "goodbye": {
+      "text": "বিদায় {user_name}! {group_name} পরিবার আপনাকে স্মরণ রাখবে।",
+      "voice_type": "soft",
+      "emotion": "sad",
+      "speed": 0.8
+    },
+    "thank_you": {
+      "text": "আপনাকেও ধন্যবাদ! 😊",
+      "voice_type": "soft",
+      "emotion": "happy",
+      "speed": 1.0
+    },
+    "error": {
+      "text": "দুঃখিত, একটি সমস্যা হয়েছে। পরে আবার চেষ্টা করুন।",
+      "voice_type": "normal",
+      "emotion": "calm",
+      "speed": 0.9
+    }
+  },
+  
+  "cache_settings": {
+    "max_files": 100,
+    "max_age_hours": 24,
+    "cleanup_interval": 3600
+  },
+  
+  "supported_languages": {
+    "bn": "বাংলা",
+    "en": "English",
+    "hi": "हिन्दी",
+    "ar": "العربية"
+  }
+}
