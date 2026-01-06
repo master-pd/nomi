@@ -123,8 +123,30 @@ async def main():
     await bot.start()
 
 if __name__ == "__main__":
+    import asyncio
+    import signal
+
+    bot = NOMIBot()
+
+    async def run_bot():
+        # Handle signals
+        def signal_handler(sig, frame):
+            asyncio.create_task(bot.stop())
+
+        signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGTERM, signal_handler)
+
+        await bot.start()
+
     try:
-        asyncio.run(main())
+        # Get running loop or create new
+        try:
+            loop = asyncio.get_running_loop()
+        except RuntimeError:
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+
+        loop.run_until_complete(run_bot())
     except KeyboardInterrupt:
         print("\n👋 Bot stopped by user")
     except Exception as e:
