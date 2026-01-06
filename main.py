@@ -19,6 +19,32 @@ from logger import setup_logger
 from healthcheck import HealthMonitor
 from version import __version__
 
+# Telegram
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
+
+# Load bot token
+from config.bot import BOT_TOKEN
+
+# Load responses
+import json
+RESPONSES = {}
+resp_dir = Path("responses")
+if resp_dir.exists():
+    for f in resp_dir.glob("*.json"):
+        with open(f, "r", encoding="utf-8") as file:
+            RESPONSES[f.stem] = json.load(file)
+
+# Example command handlers
+async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = RESPONSES.get("welcome", {}).get("text", "𝗡𝗢𝗠𝗜 Bot is active! ✅")
+    await update.message.reply_text(text)
+
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = RESPONSES.get("help", {}).get("text", "This is the help message.")
+    await update.message.reply_text(text)
+
+
 class NOMIBot:
     """Main Bot Class"""
     
@@ -29,6 +55,10 @@ class NOMIBot:
         self.shutdown = ShutdownManager()
         self.health = HealthMonitor()
         self.is_running = False
+        self.app = ApplicationBuilder().token(BOT_TOKEN).build()
+        # Register Telegram commands
+        self.app.add_handler(CommandHandler("start", start_command))
+        self.app.add_handler(CommandHandler("help", help_command))
         
     async def start(self):
         """Start the bot"""
@@ -50,10 +80,9 @@ class NOMIBot:
             self.is_running = True
             self.logger.info("✅ Bot successfully started!")
             
-            # Keep bot running
-            while self.is_running:
-                await asyncio.sleep(1)
-                
+            # Start Telegram polling
+            await self.app.run_polling()
+            
         except Exception as e:
             self.logger.error(f"❌ Failed to start bot: {e}")
             await self.stop()
@@ -76,7 +105,8 @@ class NOMIBot:
         """Restart the bot"""
         self.logger.info("🔄 Restarting bot...")
         # Implementation for restart
-        
+
+
 async def main():
     """Main function"""
     bot = NOMIBot()
@@ -93,7 +123,6 @@ async def main():
     await bot.start()
 
 if __name__ == "__main__":
-    # Run bot
     try:
         asyncio.run(main())
     except KeyboardInterrupt:
