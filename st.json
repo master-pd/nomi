@@ -1,0 +1,233 @@
+{
+  "bot_identity": {
+    "bot_name": "𝗡𝗢𝗠𝗜 ⟵𝗼_𝟬",
+    "style": "Ultra Pro Max Enterprise",
+    "language": "Bangla",
+    "timezone": "Asia/Dhaka",
+    "platform": "Telegram",
+    "architecture": "100% JSON Driven Modular System",
+    "hardcode": false,
+    "env_file": false,
+    "keywords": false,
+    "categories": false,
+    "mobile_friendly": true,
+    "termux_ready": true
+  },
+
+  "bot_purpose": {
+    "primary": "Advanced group & private automation bot",
+    "secondary": [
+      "Welcome & Goodbye system",
+      "Voice based interaction",
+      "Professional image collage",
+      "Auto moderation",
+      "User & group analytics"
+    ]
+  },
+
+  "full_feature_list": {
+    "welcome_system": {
+      "location": "group",
+      "image": true,
+      "voice": true,
+      "background": "assets/bg.jpg",
+      "collage": true,
+      "show_information": [
+        "User Name",
+        "User ID",
+        "Username",
+        "Join Time",
+        "Account Age",
+        "User Rank",
+        "User Reputation",
+        "User Badge",
+        "Group Name",
+        "Total Members",
+        "Group Rules",
+        "Group Security Level",
+        "Bot Status"
+      ]
+    },
+
+    "goodbye_system": {
+      "location": "private",
+      "voice": true,
+      "dynamic_text": true,
+      "auto_detect_leave": true
+    },
+
+    "auto_response_system": {
+      "text_reply": true,
+      "voice_reply": true,
+      "no_keywords": true,
+      "json_controlled": true,
+      "fallback_system": true
+    },
+
+    "voice_system": {
+      "language": "bn",
+      "voice_type": "soft",
+      "speed_control": true,
+      "emotion_control": true,
+      "cache": true,
+      "auto_cleanup": true
+    },
+
+    "image_system": {
+      "profile_fetch": true,
+      "group_photo_fetch": true,
+      "collage_engine": true,
+      "font_support": true,
+      "gradient_text": true,
+      "shadow_text": true,
+      "responsive_layout": true
+    },
+
+    "moderation_system": {
+      "anti_spam": true,
+      "anti_flood": true,
+      "anti_link": true,
+      "bad_word_filter": true,
+      "auto_warn": true,
+      "auto_mute": true,
+      "auto_ban": true,
+      "silent_delete": true,
+      "log_actions": true
+    },
+
+    "user_system": {
+      "join_time_tracking": true,
+      "message_counter": true,
+      "account_age_detection": true,
+      "rank_system": true,
+      "reputation_system": true,
+      "badge_system": true,
+      "trust_score": true
+    },
+
+    "group_system": {
+      "multi_group_support": true,
+      "group_health_score": true,
+      "join_leave_logs": true,
+      "rules_enforcement": true,
+      "security_status": true
+    },
+
+    "extra_enterprise_features": [
+      "Scheduled messages",
+      "Reminder system",
+      "Event trigger system",
+      "Permission resolver",
+      "Rate limit protection",
+      "Crash recovery",
+      "Health monitoring",
+      "Hot JSON reload",
+      "Auto fallback response",
+      "Auto reaction ",
+      "Mobile optimized execution"
+    ]
+  },
+
+  "root_files": [
+    "main.py",
+    "bootstrap.py",
+    "startup.py",
+    "shutdown.py",
+    "router.py",
+    "dispatcher.py",
+    "event_listener.py",
+    "json_loader.py",
+    "config_loader.py",
+    "permission_manager.py",
+    "scheduler.py",
+    "security.py",
+    "logger.py",
+    "error_handler.py",
+    "healthcheck.py",
+    "version.py"
+  ],
+
+  "engine_and_other_files": {
+    "core_engines": [
+      "welcome_engine.py",
+      "goodbye_engine.py",
+      "auto_reply_engine.py",
+      "voice_engine.py",
+      "image_engine.py",
+      "collage_engine.py",
+      "profile_engine.py",
+      "group_engine.py",
+      "stats_engine.py",
+      "rank_engine.py"
+    ],
+    "moderation": [
+      "anti_spam.py",
+      "anti_flood.py",
+      "anti_link.py",
+      "anti_badword.py",
+      "auto_mute.py",
+      "auto_ban.py",
+      "warning_system.py"
+    ],
+    "utilities": [
+      "time_utils.py",
+      "file_utils.py",
+      "string_utils.py",
+      "json_utils.py",
+      "image_utils.py",
+      "voice_utils.py",
+      "security_utils.py",
+      "random_utils.py",
+      "text_style_utils.py"
+    ]
+  },
+
+  "response_json_files": [
+    "welcome.json",
+    "goodbye.json",
+    "auto_reply.json",
+    "voice_reply.json",
+    "rules.json",
+    "help.json",
+    "admin.json",
+    "error.json",
+    "notification.json",
+    "event.json",
+    "reminder.json"
+  ],
+
+  "data_flow": {
+    "step_1": "Telegram event received",
+    "step_2": "Router identifies event type",
+    "step_3": "Dispatcher sends event to engine",
+    "step_4": "Engine reads required JSON",
+    "step_5": "Image / Voice generated if enabled",
+    "step_6": "Response sent",
+    "step_7": "Logs stored"
+  },
+
+  "security_and_compliance": {
+    "telegram_api_compliant": true,
+    "cannot_message_blocked_user": true,
+    "cannot_force_dm": true,
+    "ethical_use_only": true
+  },
+
+  "performance_system": {
+    "json_cache": true,
+    "voice_cache": true,
+    "image_cache": true,
+    "auto_cleanup": true,
+    "low_ram_safe": true
+  },
+
+  "final_summary": {
+    "bot_name": "𝗡𝗢𝗠𝗜 ⟵𝗼_𝟬",
+    "root_files": 16,
+    "engine_and_other_files": 26,
+    "response_json_files": 11,
+    "total_files": 53,
+    "system_level": "Ultra Pro Max Enterprise",
+    "ready_for_code_generation": true
+  }
+}
