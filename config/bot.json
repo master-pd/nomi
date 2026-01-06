@@ -1,4 +1,4 @@
-{
+{ 
   "name": "𝗡𝗢𝗠𝗜 ⟵𝗼_𝟬",
   "version": "1.0.0",
   "language": "bn",
@@ -11,5 +11,6 @@
   "max_workers": 10,
   "auto_update": true,
   "backup_enabled": true,
+  "ENABLE_SYSTEM_METRICS": false,
   "privacy_mode": false
 }
