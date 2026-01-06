@@ -56,13 +56,14 @@ def check_bot_health():
             health_status["issues"].append("High memory usage")
         
         # Check CPU usage
-        cpu_percent = psutil.cpu_percent(interval=1)
-        health_status["metrics"]["cpu_usage_percent"] = cpu_percent
-        
-        if cpu_percent > 80:
-            health_status["status"] = "warning"
-            health_status["issues"].append("High CPU usage")
-        
+        try:
+           cpu = psutil.cpu_percent()
+        except PermissionError:
+           cpu = None
+
+        if cpu is None:
+            logger.warning("⚠️ CPU metrics unavailable (Termux restricted)")
+    
         # Check database files
         db_files = [
             "db/users.json",
