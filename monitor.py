@@ -57,12 +57,12 @@ def check_bot_health():
         
         # Check CPU usage
         try:
-           cpu = psutil.cpu_percent()
+            cpu = psutil.cpu_percent()
+            ram = psutil.virtual_memory().percent
         except PermissionError:
-           cpu = None
-
-        if cpu is None:
-            logger.warning("⚠️ CPU metrics unavailable (Termux restricted)")
+            cpu = None
+            ram = None
+            logger.warning("⚠️ CPU/RAM metrics unavailable (Termux restricted)")
     
         # Check database files
         db_files = [
