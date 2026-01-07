@@ -1,81 +1,114 @@
-#!/usr/bin/env python3
-"""
-Main entry point for NOMI Bot
-"""
-
 import asyncio
 import logging
+import json
 from pathlib import Path
 
-from bootstrap import Bootstrap
-from startup import StartupManager
-from dispatcher import Dispatcher
-from router import Router, EventType
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, CallbackQueryHandler, ContextTypes, filters
 
-# ============================================
-# Logging setup
-# ============================================
+# ===============================
+# Logging Setup
+# ===============================
 logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    level=logging.INFO
 )
 logger = logging.getLogger("nomi_main")
 
-# ============================================
-# Main bot class
-# ============================================
-class NomiBot:
-    def __init__(self):
-        self.bootstrap = Bootstrap()
-        self.startup = StartupManager()
-        self.router = Router()
-        self.dispatcher = Dispatcher(self.router)
-        self.loop = asyncio.get_event_loop()
-        self.bot_token = None
+# ===============================
+# Load Config
+# ===============================
+CONFIG_PATH = Path("config/bot.json")
+if not CONFIG_PATH.exists():
+    logger.error("❌ bot.json config file missing!")
+    exit(1)
 
-    async def start(self):
-        try:
-            logger.info("🚀 NOMI vv1.0.0-build1 Starting...")
-            logger.info("🌍 Language: Bangla | ⏰ Timezone: Asia/Dhaka")
+with open(CONFIG_PATH, "r", encoding="utf-8") as f:
+    config = json.load(f)
 
-            # Bootstrap system
-            await self.bootstrap.initialize()
+BOT_TOKEN = config.get("token")
+if not BOT_TOKEN:
+    logger.error("❌ Telegram token not found in config/bot.json")
+    exit(1)
 
-            # Startup sequence
-            await self.startup.execute()
+# ===============================
+# Load Response Files
+# ===============================
+RESPONSES_PATH = Path("responses")
+responses = {}
 
-            # Save token from startup config
-            self.bot_token = self.startup.config.get("telegram_token")
-            if not self.bot_token:
-                raise ValueError("❌ Telegram token not found in config/bot.json")
+for file in RESPONSES_PATH.glob("*.json"):
+    with open(file, "r", encoding="utf-8") as f:
+        responses[file.stem] = json.load(f)
+logger.info(f"✅ Response files loaded: {[f.stem for f in RESPONSES_PATH.glob('*.json')]}")
 
-            # Start dispatcher
-            await self.dispatcher.start()
+# ===============================
+# Command Handlers
+# ===============================
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    username = update.effective_user.first_name
+    welcome_text = responses.get("welcome", {}).get("start", f"হ্যালো {username}, NOMI বটে স্বাগতম!")
+    # Example button
+    keyboard = [
+        [InlineKeyboardButton("Help", callback_data="help")],
+        [InlineKeyboardButton("Info", callback_data="info")]
+    ]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+    await update.message.reply_text(welcome_text, reply_markup=reply_markup)
 
-            logger.info("✅ Bot fully initialized")
-            logger.info("🤖 NOMI is ONLINE")
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    help_text = responses.get("help", {}).get("help", "এই বটে NOMI bot সাহায্য করবে!")
+    await update.message.reply_text(help_text)
 
-            # Keep running until Ctrl+C
-            while True:
-                await asyncio.sleep(1)
+async def auto_reply(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    text = update.message.text.lower()
+    reply = None
+    # Simple keyword match from auto_reply.json
+    auto_data = responses.get("auto_reply", {})
+    for key, value in auto_data.items():
+        if key.lower() in text:
+            reply = value
+            break
+    if reply:
+        await update.message.reply_text(reply)
 
-        except KeyboardInterrupt:
-            logger.info("🛑 Stopping bot...")
-            await self.shutdown()
-        except Exception as e:
-            logger.error(f"❌ Fatal error: {e}")
-            await self.shutdown()
+# ===============================
+# CallbackQuery Handler (Buttons)
+# ===============================
+async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    await query.answer()
+    if query.data == "help":
+        help_text = responses.get("help", {}).get("help", "এই বটে NOMI bot সাহায্য করবে!")
+        await query.edit_message_text(help_text)
+    elif query.data == "info":
+        await query.edit_message_text("NOMI Bot v1.0.0 | Developed by You")
 
-    async def shutdown(self):
-        logger.info("🛑 Starting shutdown sequence...")
-        # Cleanup resources
-        await self.bootstrap.cleanup()
-        logger.info("👋 Bot stopped successfully")
+# ===============================
+# Main Function
+# ===============================
+async def main():
+    # Build application
+    application = ApplicationBuilder().token(BOT_TOKEN).build()
 
+    # Register handlers
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("help", help_command))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, auto_reply))
+    application.add_handler(CallbackQueryHandler(button_handler))
 
-# ============================================
-# Entry point
-# ============================================
+    # Start the bot
+    logger.info("🤖 NOMI is ONLINE")
+    await application.initialize()
+    await application.start()
+    await application.updater.start_polling()
+    await application.updater.idle()  # Keeps running until Ctrl+C
+
+# ===============================
+# Run
+# ===============================
 if __name__ == "__main__":
-    bot = NomiBot()
-    asyncio.run(bot.start())
+    try:
+        asyncio.run(main())
+    except (KeyboardInterrupt, SystemExit):
+        logger.info("👋 Bot stopped")
