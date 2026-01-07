@@ -3,7 +3,7 @@ Router - Routes events to appropriate handlers
 """
 
 import logging
-from typing import Dict, Any, Optional
+from typing import List, Dict, Any, Optional
 from enum import Enum
 
 class EventType(Enum):
