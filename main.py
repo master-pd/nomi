@@ -102,7 +102,7 @@ async def main():
     await application.initialize()
     await application.start()
     await application.updater.start_polling()
-    await application.updater.idle()  # Keeps running until Ctrl+C
+    await application.run_polling()  # Keeps running until Ctrl+C
 
 # ===============================
 # Run
