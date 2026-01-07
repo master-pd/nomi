@@ -1,118 +1,81 @@
 #!/usr/bin/env python3
 """
-𝗡𝗢𝗠𝗜 ⟵𝗼_𝟬 - Main Entry Point
-Ultra Pro Max Enterprise Telegram Bot
+Main entry point for NOMI Bot
 """
 
 import asyncio
-import sys
 import logging
 from pathlib import Path
 
 from bootstrap import Bootstrap
 from startup import StartupManager
-from shutdown import ShutdownManager
-from logger import setup_logger
-from healthcheck import HealthMonitor
-from version import __version__
+from dispatcher import Dispatcher
+from router import Router, EventType
 
-# Telegram imports
-from telegram.ext import ApplicationBuilder, CommandHandler
+# ============================================
+# Logging setup
+# ============================================
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger("nomi_main")
 
-class NOMIBot:
-    """Main Bot Class"""
-
+# ============================================
+# Main bot class
+# ============================================
+class NomiBot:
     def __init__(self):
-        self.logger = setup_logger("nomi_main")
         self.bootstrap = Bootstrap()
         self.startup = StartupManager()
-        self.shutdown = ShutdownManager()
-        self.health = HealthMonitor()
-        self.is_running = False
-        self.application = None  # Telegram Application
+        self.router = Router()
+        self.dispatcher = Dispatcher(self.router)
+        self.loop = asyncio.get_event_loop()
+        self.bot_token = None
 
     async def start(self):
-        """Start the bot"""
         try:
-            self.logger.info(f"🚀 NOMI v{__version__} Starting...")
-            self.logger.info("🌍 Language: Bangla | ⏰ Timezone: Asia/Dhaka")
+            logger.info("🚀 NOMI vv1.0.0-build1 Starting...")
+            logger.info("🌍 Language: Bangla | ⏰ Timezone: Asia/Dhaka")
 
-            # Bootstrap
+            # Bootstrap system
             await self.bootstrap.initialize()
 
-            # Startup
+            # Startup sequence
             await self.startup.execute()
 
-            # Telegram bot initialization
-            token = self.startup.config.get("token")
-            if not token:
-                self.logger.error("❌ Bot token missing in config!")
-                return
+            # Save token from startup config
+            self.bot_token = self.startup.config.get("telegram_token")
+            if not self.bot_token:
+                raise ValueError("❌ Telegram token not found in config/bot.json")
 
-            self.application = ApplicationBuilder().token(token).build()
+            # Start dispatcher
+            await self.dispatcher.start()
 
-            # Add a simple /start handler for testing
-            async def start_command(update, context):
-                await update.message.reply_text("✅ NOMI Bot is ONLINE!")
+            logger.info("✅ Bot fully initialized")
+            logger.info("🤖 NOMI is ONLINE")
 
-            self.application.add_handler(CommandHandler("start", start_command))
-
-            # Start Telegram polling in background
-            asyncio.create_task(self.application.initialize())
-            asyncio.create_task(self.application.start())
-            self.logger.info("✅ Telegram bot initialized successfully")
-
-            # Health Monitor
-            asyncio.create_task(self.health.start_monitoring())
-
-            self.is_running = True
-            self.logger.info("✅ Bot successfully started!")
-
-            # Keep bot running
-            while self.is_running:
+            # Keep running until Ctrl+C
+            while True:
                 await asyncio.sleep(1)
 
+        except KeyboardInterrupt:
+            logger.info("🛑 Stopping bot...")
+            await self.shutdown()
         except Exception as e:
-            self.logger.error(f"❌ Failed to start bot: {e}")
-            await self.stop()
+            logger.error(f"❌ Fatal error: {e}")
+            await self.shutdown()
 
-    async def stop(self):
-        """Stop the bot"""
-        self.logger.info("🛑 Stopping bot...")
-        self.is_running = False
-
-        # Stop Telegram
-        if self.application:
-            await self.application.stop()
-            await self.application.shutdown()
-            self.logger.info("✅ Telegram bot stopped")
-
-        # Shutdown
-        await self.shutdown.execute()
-
-        # Cleanup
+    async def shutdown(self):
+        logger.info("🛑 Starting shutdown sequence...")
+        # Cleanup resources
         await self.bootstrap.cleanup()
-
-        self.logger.info("👋 Bot stopped successfully")
-
-
-async def run_bot():
-    bot = NOMIBot()
-
-    # Handle Ctrl+C
-    import signal
-    def handler(sig, frame):
-        asyncio.create_task(bot.stop())
-    signal.signal(signal.SIGINT, handler)
-    signal.signal(signal.SIGTERM, handler)
-
-    await bot.start()
+        logger.info("👋 Bot stopped successfully")
 
 
+# ============================================
+# Entry point
+# ============================================
 if __name__ == "__main__":
-    try:
-        asyncio.run(run_bot())
-    except KeyboardInterrupt:
-        print("\n👋 Bot stopped by user")
-    except Exception as e:
-        print(f"❌ Fatal error: {e}")
+    bot = NomiBot()
+    asyncio.run(bot.start())
